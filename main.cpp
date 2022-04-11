@@ -71,6 +71,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if (msg.message == WM_QUIT) {
 			break;
 		}
+
+		//DirectX毎フレーム処理　ここから
+
+		//DirectX毎フレーム処理　ここまで
 	}
 
 	return 0;
