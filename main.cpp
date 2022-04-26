@@ -460,6 +460,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		// 3.画面クリア R G B A
 		FLOAT clearColor[] = { 0.1f,0.25f, 0.5f,0.0f }; // 青っぽい色
+
+		if (key[DIK_SPACE]) {
+			clearColor[0] = { 0 };
+			clearColor[1] = { 0.5f };
+			clearColor[2] = { 0.5f };
+			clearColor[3] = { 0.5f };
+		}
 		commandlist->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
 		//DirectX毎フレーム処理　ここまで
 #pragma endregion
@@ -477,7 +484,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// ビューポート設定コマンドを、コマンドリストに積む
 		commandlist->RSSetViewports(1, &viewport);
 
-		
+
 		//グラフィックスコマンド　ここから
 		// シザー矩形
 		D3D12_RECT scissorRect{};
