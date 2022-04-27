@@ -352,10 +352,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// ブレンドステート
 	//pipelineDesc.BlendState.RenderTarget[0].RenderTargetWriteMask
 	//	= D3D12_COLOR_WRITE_ENABLE_ALL; // RBGA全てのチャンネルを描画
-
 	D3D12_RENDER_TARGET_BLEND_DESC& blenddesc = pipelineDesc.BlendState.RenderTarget[0];
 	blenddesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL; // RBGA全てのチャンネルを描画
 
+	// ブレンド設定
 	// 共通設定(アルファ値)
 	blenddesc.BlendEnable = true;				 // ブレンドを有効にする
 	blenddesc.BlendOpAlpha = D3D12_BLEND_OP_ADD; // 加算
@@ -371,6 +371,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	blenddesc.BlendOp = D3D12_BLEND_OP_REV_SUBTRACT;    // デストからソースを減算
 	blenddesc.SrcBlend = D3D12_BLEND_ONE;               // ソースの値を100% 使う
 	blenddesc.DestBlend = D3D12_BLEND_ONE;              // デストの値を100% 使う
+
+	// 色反転
+	blenddesc.BlendOp = D3D12_BLEND_OP_ADD;				//	加算
+	blenddesc.SrcBlend = D3D12_BLEND_INV_DEST_COLOR;	// 1.0f - デストカラーの値
+	blenddesc.DestBlend = D3D12_BLEND_ZERO;				// 使わない
+
+	// 半透明合成
+	blenddesc.BlendOp = D3D12_BLEND_OP_ADD;
+	blenddesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	blenddesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
 
 	// 頂点レイアウトの設定
 	pipelineDesc.InputLayout.pInputElementDescs = inputLayout;
@@ -437,7 +447,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		commandlist->OMSetRenderTargets(1, &rtvHandle, false, nullptr);
 
 		// 3.画面クリア R G B A
-		FLOAT clearColor[] = { 0.0f,0.0f, 1.0f,0.0f }; // 青っぽい色
+		FLOAT clearColor[] = { 0.1f, 0.25f, 0.5f, 0.0f }; // 青っぽい色
 		commandlist->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
 
 		// 4.描画コマンドここから
