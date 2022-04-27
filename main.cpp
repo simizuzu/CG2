@@ -503,32 +503,32 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		D3D12_VIEWPORT viewport[4];
 
 		// ç∂è„
-		viewport[0].Width = 700;   // â°ïù
-		viewport[0].Height = 500; // ècïù
+		viewport[0].Width = 700;		     // â°ïù
+		viewport[0].Height = 500;			 // ècïù
 		viewport[0].TopLeftX = 0;			 // ç∂è„X
 		viewport[0].TopLeftY = 0;			 // ç∂è„Y
 		viewport[0].MinDepth = 0.0f;		 // ç≈è¨ê[ìx(0Ç≈ÇÊÇ¢)
 		viewport[0].MaxDepth = 1.0f;		 // ç≈ëÂê[ìx(1Ç≈ÇÊÇ¢)
 
 		// âEè„
-		viewport[1].Width = 500;   // â°ïù
-		viewport[1].Height = 500; // ècïù
+		viewport[1].Width = 500;		     // â°ïù
+		viewport[1].Height = 500;			 // ècïù
 		viewport[1].TopLeftX = 700;			 // ç∂è„X
 		viewport[1].TopLeftY = 0;			 // ç∂è„Y
 		viewport[1].MinDepth = 0.0f;		 // ç≈è¨ê[ìx(0Ç≈ÇÊÇ¢)
 		viewport[1].MaxDepth = 1.0f;		 // ç≈ëÂê[ìx(1Ç≈ÇÊÇ¢)
 
 		// ç∂â∫
-		viewport[2].Width = 700;   // â°ïù
-		viewport[2].Height = 220; // ècïù
+		viewport[2].Width = 700;			 // â°ïù
+		viewport[2].Height = 220;			 // ècïù
 		viewport[2].TopLeftX = 0;			 // ç∂è„X
 		viewport[2].TopLeftY = 500;			 // ç∂è„Y
 		viewport[2].MinDepth = 0.0f;		 // ç≈è¨ê[ìx(0Ç≈ÇÊÇ¢)
 		viewport[2].MaxDepth = 1.0f;		 // ç≈ëÂê[ìx(1Ç≈ÇÊÇ¢)
 
 		// âEâ∫
-		viewport[3].Width = 500;   // â°ïù
-		viewport[3].Height = 220; // ècïù
+		viewport[3].Width = 500;			 // â°ïù
+		viewport[3].Height = 220;			 // ècïù
 		viewport[3].TopLeftX = 700;			 // ç∂è„X
 		viewport[3].TopLeftY = 500;			 // ç∂è„Y
 		viewport[3].MinDepth = 0.0f;		 // ç≈è¨ê[ìx(0Ç≈ÇÊÇ¢)
