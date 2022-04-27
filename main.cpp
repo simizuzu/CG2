@@ -394,6 +394,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	pipelineDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; // 0~255指定のRGBA
 	pipelineDesc.SampleDesc.Count = 1; // 1ピクセルにつき1回サンプリング
 
+	// ルートパラメータの設定
+	D3D12_ROOT_PARAMETER rootParam = {};
+	rootParam.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;    // 定数バッファビュー
+	rootParam.Descriptor.ShaderRegister = 0;                    // 定数バッファ番号
+	rootParam.Descriptor.RegisterSpace = 0;                     // デフォルト値
+	rootParam.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;   //全てのシェーダから見える
+
 	// ルートシグネチャ
 	ID3D12RootSignature* rootSignature;
 	// ルートシグネチャの設定
@@ -454,15 +461,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// 値を書き込むと自動的に転送される
 	constMapMaterial->color = XMFLOAT4(1, 0, 0, 0.5f);              // RGBAで半透明の赤
-
-	// ルートパラメータの設定
-	D3D12_ROOT_PARAMETER rootParam = {};
-	rootParam.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;    // 定数バッファビュー
-	rootParam.Descriptor.ShaderRegister = 0;                    // 定数バッファ番号
-	rootParam.Descriptor.RegisterSpace = 0;                     // デフォルト値
-	rootParam.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;   //全てのシェーダから見える
-
-
 #pragma endregion
 
 #pragma region ゲームループ
@@ -529,6 +527,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		// 頂点バッファビューの設定コマンド
 		commandlist->IASetVertexBuffers(0, 1, &vbView);
+
+		// 定数バッファビュー(CBV)の設定コマンド
+		commandlist->SetGraphicsRootConstantBufferView(0, constBuffMaterial->GetGPUVirtualAddress());
 
 		// 描画コマンド
 		commandlist->DrawInstanced(_countof(vertices), 1, 0, 0); // 全ての頂点を使って描画
