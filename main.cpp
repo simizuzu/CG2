@@ -459,8 +459,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	result = constBuffMaterial->Map(0, nullptr, (void**)&constMapMaterial); // マッピング
 	assert(SUCCEEDED(result));
 
-	// 値を書き込むと自動的に転送される
-	constMapMaterial->color = XMFLOAT4(1, 0, 0, 0.5f);              // RGBAで半透明の赤
+	float colorRed = 1.0f;
+	float colorGreen = 0.0f;
+	float colorBlue = 0.0f;
+
 #pragma endregion
 
 #pragma region ゲームループ
@@ -533,6 +535,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		// 描画コマンド
 		commandlist->DrawInstanced(_countof(vertices), 1, 0, 0); // 全ての頂点を使って描画
+
+		// 値を書き込むと自動的に転送される
+		constMapMaterial->color = XMFLOAT4(colorRed, colorGreen, colorBlue, 0.5f);              // RGBAで半透明の赤
+		
 		// 4.描画コマンドここまで
 
 		// 5.リソースバリアを戻す
