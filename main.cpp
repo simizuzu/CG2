@@ -448,7 +448,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		commandlist->SetGraphicsRootSignature(rootSignature);
 
 		// プリミティブ形状の設定コマンド
-		commandlist->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角形リスト
+		commandlist->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST); // 三角形リスト
 
 		// 頂点バッファビューの設定コマンド
 		commandlist->IASetVertexBuffers(0, 1, &vbView);
