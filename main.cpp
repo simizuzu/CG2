@@ -478,6 +478,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			break;
 		}
 
+		// 値を書き込むと自動的に転送される
+		if (colorGreen < 1.0f)
+		{
+			colorGreen += 0.01f;
+			colorRed -= 0.01f;
+		}
+
+		constMapMaterial->color = XMFLOAT4(colorRed, colorGreen, colorBlue, 0.5f);              // RGBAで半透明の赤
+
 		//DirectX毎フレーム処理　ここから
 		// バックバッファの番号を取得(2つなので0番か1番)
 		UINT bbIndex = swapChain->GetCurrentBackBufferIndex();
@@ -536,9 +545,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// 描画コマンド
 		commandlist->DrawInstanced(_countof(vertices), 1, 0, 0); // 全ての頂点を使って描画
 
-		// 値を書き込むと自動的に転送される
-		constMapMaterial->color = XMFLOAT4(colorRed, colorGreen, colorBlue, 0.5f);              // RGBAで半透明の赤
-		
 		// 4.描画コマンドここまで
 
 		// 5.リソースバリアを戻す
