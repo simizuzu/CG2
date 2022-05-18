@@ -474,7 +474,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		commandlist->OMSetRenderTargets(1, &rtvHandle, false, nullptr);
 
 		// 3.画面クリア R G B A
-		FLOAT clearColor[] = { 0.1f,0.25f, 0.5f,0.0f }; // 青っぽい色
+		FLOAT clearColor[] = { 0.72f,0.76f, 0.18f,0.0f }; // 黄緑色
 		commandlist->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
 
 		// インデックスバッファビューの設定コマンド
