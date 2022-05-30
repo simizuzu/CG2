@@ -1,79 +1,32 @@
 #include <Windows.h>
-
 #include <d3d12.h>
 #include <dxgi1_6.h>
 #include <cassert>
-
 #include <vector>
 #include <string>
-
+#include <DirectXMath.h>
+#include <d3dcompiler.h>
+#include <dinput.h>
+#include <DirectXTex.h>
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")
-
-#include <DirectXMath.h>
-using namespace DirectX;
-
-#include <d3dcompiler.h>
 #pragma comment(lib,"d3dcompiler.lib")
+#pragma comment (lib,"dinput8.lib")
+#pragma comment (lib,"dxguid.lib")
+#include "WinApi.h"
+#include "Input.h"
 
-#pragma region ウィンドウプロシージャ
-//ウィンドウプロシージャ
-LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
-	//メッセージに応じてゲーム固有の処理を行う
-	switch (msg) {
-	case WM_DESTROY:
-		//OSに対して、アプリの終了を伝える
-		PostQuitMessage(0);
-		return 0;
-	}
-
-	//標準のメッセージ処理を行う
-	return DefWindowProc(hwnd, msg, wparam, lparam);
-}
-
-#pragma endregion
+using namespace DirectX;
 
 #pragma region API初期化
 //Windowsアプリでのエントリーポイント(main関数)
-int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
-	OutputDebugStringA("Hello,DirectX!!\n");
+int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
-	const int window_width = 1280;
-	const int window_height = 720;
+	WinApi* winApi = nullptr;
+	winApi = winApi->GetInstance();
+	winApi->CreateGameWindow();
 
-	//ウィンドウクラスの設定
-	WNDCLASSEX w{};
-	w.cbSize = sizeof(WNDCLASSEX);
-	w.lpfnWndProc = (WNDPROC)WindowProc;
-	w.lpszClassName = L"DirectXGame";
-	w.hInstance = GetModuleHandle(nullptr);
-	w.hCursor = LoadCursor(NULL, IDC_ARROW);
-
-	//ウィンドウクラスをOSに登録する
-	RegisterClassEx(&w);
-	//ウィンドウサイズ{ X座標　Y座標　横幅　縦幅　}
-	RECT wrc = { 0,0,window_width, window_height };
-	//自動でサイズを補正する
-	AdjustWindowRect(&wrc, WS_OVERLAPPEDWINDOW, false);
-
-	//ウィンドウオブジェクトの生成
-	HWND hwnd = CreateWindow(w.lpszClassName, //クラス名
-		L"DirectXGame",       //タイトルバーの文字
-		WS_OVERLAPPEDWINDOW,  //標準的なウィンドウスタイル
-		CW_USEDEFAULT,        //表示X座標（OSに任せる）
-		CW_USEDEFAULT,        //表示Y座標（OSに任せる）
-		wrc.right - wrc.left, //ウィンドウ横幅
-		wrc.bottom - wrc.top, //ウィンドウ縦幅
-		nullptr,              //親ウィンドウハンドル
-		nullptr,              //メニューハンドル
-		w.hInstance,          //呼び出しアプリケーションハンドル
-		nullptr);             //オプション
-
-	//ウィンドウを表示状態にする
-	ShowWindow(hwnd, SW_SHOW);
 #pragma endregion
-
-	MSG msg{};//メッセージ
 
 #pragma region デバックレイヤー
 #ifdef _DEBUG
@@ -93,9 +46,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	IDXGIFactory7* dxgiFactory = nullptr;
 	IDXGISwapChain4* swapChain = nullptr;
 	ID3D12CommandAllocator* cmdAllocator = nullptr;
-	ID3D12GraphicsCommandList* commandlist = nullptr;
+	ID3D12GraphicsCommandList* commandList = nullptr;
 	ID3D12CommandQueue* commandQueue = nullptr;
 	ID3D12DescriptorHeap* rtvHeap = nullptr;
+
+	//winApi->WindowMessage();
+	//Input* input = nullptr;
+	//input->Initialize(, winApi->GetHwnd(), winApi->GetWndclassex()); // Initialize(result, hwnd, w);
+
 	//DirectX初期化処理　ここまで
 
 	//DXGIファクトリーの生成
@@ -161,7 +119,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	result = device->CreateCommandList(0,
 		D3D12_COMMAND_LIST_TYPE_DIRECT,
 		cmdAllocator, nullptr,
-		IID_PPV_ARGS(&commandlist));
+		IID_PPV_ARGS(&commandList));
 	assert(SUCCEEDED(result));
 
 	//コマンドキューの設定
@@ -182,7 +140,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 	//スワップチェーンの生成
 	result = dxgiFactory->CreateSwapChainForHwnd(
-		commandQueue, hwnd, &swapChainDesc, nullptr, nullptr,
+		commandQueue, winApi->GetHwnd(), &swapChainDesc, nullptr, nullptr,
 		(IDXGISwapChain1**)&swapChain);
 	assert(SUCCEEDED(result));
 
@@ -221,17 +179,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	result = device->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
 
+	
+
+
 #pragma endregion
 
 #pragma region 描画初期化処理
+	float PI = 3.14f;
+	float radius = 5.0f;
+
+	const int DIV = 3;
 	// 頂点データ
 	XMFLOAT3 vertices[] = {
-	{ -0.5f, -0.5f, 0.0f }, // 左下　インデックス0
-	{ -0.5f, +0.5f, 0.0f }, // 左上　インデックス1
+	{  0.5f, -0.5f, 0.0f }, // 中上　インデックス0
+	{ -0.5f, -0.5f, 0.0f }, // 左下　インデックス1
 	{ +0.5f, -0.5f, 0.0f }, // 右下　インデックス2
-	{ +0.5f, +0.5f, 0.0f }, // 右上　インデックス3
-	{ -0.5f,  0.0f, 0.0f }, // 左中　インデックス4
-	{ +0.5f,  0.0f, 0.0f }, // 右中　インデックス5
+	
 	};
 
 	// 頂点データ全体のサイズ = 頂点データ一つ分のサイズ * 頂点データの要素数
@@ -336,10 +299,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
 	{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,D3D12_APPEND_ALIGNED_ELEMENT,D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0}, // (1行で書いたほうが見やすい)
 	};
-
+	/* 
 	// インデックスデータ
 	uint16_t indices[] =
 	{
+		sin(2 * PI / 48 * 0),
 		1,3,4,
 		3,4,5,
 		4,5,0,
@@ -388,7 +352,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ibView.BufferLocation = indexBuff->GetGPUVirtualAddress();
 	ibView.Format = DXGI_FORMAT_R16_UINT;
 	ibView.SizeInBytes = sizeIB;
-
+	*/
 	// グラフィックスパイプライン設定
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc{};
 	// シェーダーの設定
@@ -444,18 +408,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	assert(SUCCEEDED(result));
 #pragma endregion
 
+	BYTE oldkey[256] = {};
+	BYTE key[256] = {};
+
 #pragma region ゲームループ
 	//ゲームループ
 	while (true) {
-		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
-			TranslateMessage(&msg); //キー入力メッセージの処理
-			DispatchMessage(&msg);  //プロシージャにメッセージを送る
-		}
 
-		//Xボタンで終了メッセージが来たらゲームループを抜ける
-		if (msg.message == WM_QUIT) {
-			break;
-		}
+		/*input->Update();*/
 
 		//DirectX毎フレーム処理　ここから
 		// バックバッファの番号を取得(2つなので0番か1番)
@@ -465,20 +425,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		barrierDesc.Transition.pResource = backBuffers[bbIndex]; // バックバッファを指定
 		barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT; // 表示状態から
 		barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態へ
-		commandlist->ResourceBarrier(1, &barrierDesc);
+		commandList->ResourceBarrier(1, &barrierDesc);
 
 		// 2.描画先の変更
 	// レンダーターゲットビューのハンドルを取得
 		D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = rtvHeap->GetCPUDescriptorHandleForHeapStart();
 		rtvHandle.ptr += bbIndex * device->GetDescriptorHandleIncrementSize(rtvHeapDesc.Type);
-		commandlist->OMSetRenderTargets(1, &rtvHandle, false, nullptr);
+		commandList->OMSetRenderTargets(1, &rtvHandle, false, nullptr);
 
 		// 3.画面クリア R G B A
 		FLOAT clearColor[] = { 0.72f,0.76f, 0.18f,0.0f }; // 黄緑色
-		commandlist->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+		commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
 
-		// インデックスバッファビューの設定コマンド
-		commandlist->IASetIndexBuffer(&ibView);
+		//// インデックスバッファビューの設定コマンド
+		//commandlist->IASetIndexBuffer(&ibView);
 		
 		// 4.描画コマンドここから
 		// 
@@ -491,7 +451,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		viewport.MinDepth = 0.0f;
 		viewport.MaxDepth = 1.0f;
 		// ビューポート設定コマンドを、コマンドリストに積む
-		commandlist->RSSetViewports(1, &viewport);
+		commandList->RSSetViewports(1, &viewport);
 
 		// シザー矩形
 		D3D12_RECT scissorRect{};
@@ -500,33 +460,33 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		scissorRect.top = 0; // 切り抜き座標上
 		scissorRect.bottom = scissorRect.top + window_height; // 切り抜き座標下
 		// シザー矩形設定コマンドを、コマンドリストに積む
-		commandlist->RSSetScissorRects(1, &scissorRect);
+		commandList->RSSetScissorRects(1, &scissorRect);
 
 		// パイプラインステートとルートシグネチャの設定コマンド
-		commandlist->SetPipelineState(pipelineState);
-		commandlist->SetGraphicsRootSignature(rootSignature);
+		commandList->SetPipelineState(pipelineState);
+		commandList->SetGraphicsRootSignature(rootSignature);
 
 		// プリミティブ形状の設定コマンド
-		commandlist->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST); // 三角形リスト
+		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST); // 三角形リスト
 
 		// 頂点バッファビューの設定コマンド
-		commandlist->IASetVertexBuffers(0, 1, &vbView);
+		commandList->IASetVertexBuffers(0, 1, &vbView);
 
-		// 描画コマンド
-		commandlist->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
+		//// 描画コマンド
+		//commandlist->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
 
 		// 4.描画コマンドここまで
 
 		// 5.リソースバリアを戻す
 		barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態から
 		barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT; // 表示状態へ
-		commandlist->ResourceBarrier(1, &barrierDesc);
+		commandList->ResourceBarrier(1, &barrierDesc);
 
 		// 命令のクローズ
-		result = commandlist->Close();
+		result = commandList->Close();
 		assert(SUCCEEDED(result));
 		// コマンドリストの実行
-		ID3D12CommandList* commandLists[] = { commandlist };
+		ID3D12CommandList* commandLists[] = { commandList };
 		commandQueue->ExecuteCommandLists(1, commandLists);
 		// 画面に表示するバッファをフリップ(裏表の入替え)
 		result = swapChain->Present(1, 0);
@@ -544,7 +504,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		result = cmdAllocator->Reset();
 		assert(SUCCEEDED(result));
 		// 再びコマンドリストを貯める準備
-		result = commandlist->Reset(cmdAllocator, nullptr);
+		result = commandList->Reset(cmdAllocator, nullptr);
 		assert(SUCCEEDED(result));
 
 		//DirectX毎フレーム処理　ここまで
