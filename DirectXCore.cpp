@@ -36,22 +36,33 @@ HRESULT DirectXCore::InitializeDXGI() {
 		adapters.push_back(tmpAdapter);
 	}
 
-	//Direct3Dデバイスの初期化
-	D3D_FEATURE_LEVEL featureLevel;
-
-	//妥当なアダプタを選別する
+	// 妥当なアダプタを選別する
 	for (size_t i = 0; i < adapters.size(); i++) {
 		DXGI_ADAPTER_DESC3 adapterDesc;
-		//アダプターの情報を収録する
+		// アダプターの情報を取得する
 		adapters[i]->GetDesc3(&adapterDesc);
 
-		//ソフトウェアデバイスを回避
+		// ソフトウェアデバイスを回避
 		if (!(adapterDesc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE)) {
-			//デバイスを採用してループを抜ける
+			// デバイスを採用してループを抜ける
 			tmpAdapter = adapters[i];
 			break;
 		}
 	}
+
+	//Direct3Dデバイスの初期化
+	D3D_FEATURE_LEVEL featureLevel;
+
+	for (size_t i = 0; i < _countof(levels); i++) {
+		// 採用したアダプターでデバイスを生成
+		result = D3D12CreateDevice(tmpAdapter, levels[i], IID_PPV_ARGS(&device));
+		if (result == S_OK) {
+			// デバイスを生成できた時点でループを抜ける
+			featureLevel = levels[i];
+			break;
+		}
+	}
+
 
 	return result;
 }
@@ -89,7 +100,6 @@ HRESULT DirectXCore::CreatRtv() {
 
 HRESULT DirectXCore::CreateSwapChain() {
 	//スワップチェーンの設定
-	DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
 	swapChainDesc.Width = 1280;
 	swapChainDesc.Height = 720;
 	swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -111,6 +121,8 @@ HRESULT DirectXCore::CreateSwapChain() {
 	{
 		assert(SUCCEEDED(0));
 	}
+
+	return S_OK;
 }
 
 DirectXCore* DirectXCore::GetInstance() {
@@ -138,29 +150,23 @@ HRESULT DirectXCore::InitializeCommand() {
 	//コマンドキューを生成
 	result = device->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&commandQueue));
 	assert(SUCCEEDED(result));
+
+	return result;
 }
 
 HRESULT DirectXCore::CreateFence() {
 	result = device->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
+	return result;
 }
 
 void DirectXCore::EnableDebugLayer() {
 	//デバックレイヤーをオンに
 	ID3D12Debug* debugController;
+
 	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
 		debugController->EnableDebugLayer();
 	}
 }
-
-void DirectXCore::EnableDebugLayer()
-{
-	ID3D12Debug* debugController;
-
-	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
-	{
-		debugController->EnableDebugLayer();
-	}
-} 
 
 void DirectXCore::InitializeDirectXCore() {
 #ifdef _DEBUG
@@ -197,16 +203,83 @@ void DirectXCore::InitializeDirectXCore() {
 
 void DirectXCore::DrawStart() {
 
+	//1.バックバッファ番号を取得
+	UINT bbIndex = swapChain->GetCurrentBackBufferIndex();
+	//書き込み可能に変更
+
+	barrierDesc.Transition.pResource = backBuffers[bbIndex];//バックバッファを指定
+	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;//表示状態から
+	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;//描画状態へ
+	commandList->ResourceBarrier(1, &barrierDesc);
+
+	//2.描画先変更
+	rtvHandle = rtvHeap->GetCPUDescriptorHandleForHeapStart();
+	rtvHandle.ptr += (static_cast<unsigned long long>(bbIndex)) * device->GetDescriptorHandleIncrementSize(rtvHeapDesc.Type);
+	commandList->OMSetRenderTargets(1, &rtvHandle, false, nullptr);
+
+	//3.画面クリア
+	commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
 }
 
 void DirectXCore::DrawEnd() {
 
+	//5.元に戻す
+	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;//描画状態から
+	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;//表示状態へ
+	commandList->ResourceBarrier(1, &barrierDesc);
+
+	ExecuteCommand();
 }
 
 void DirectXCore::ExecuteCommand() {
 
+	//命令のクローズ
+	result = commandList->Close();
+	assert(SUCCEEDED(result));
+	//コマンドリストの実行
+	ID3D12CommandList* commandListts[] = { commandList };
+	commandQueue->ExecuteCommandLists(1, commandListts);
+
+	//フリップ
+	result = swapChain->Present(1, 0);
+	assert(SUCCEEDED(result));
+
+	//コマンド実行完了を待つ
+	commandQueue->Signal(fence, ++fenceVal);
+	if (fence->GetCompletedValue() != fenceVal)
+	{
+		HANDLE event = CreateEvent(nullptr, false, false, nullptr);
+		fence->SetEventOnCompletion(fenceVal, event);
+		if (event != 0)
+		{
+			WaitForSingleObject(event, INFINITE);
+			CloseHandle(event);
+		}
+	}
+
+	//キューをクリア
+	result = cmdAllocator->Reset();
+	assert(SUCCEEDED(result));
+	//コマンドリストを貯める準備
+	if (commandList != 0)
+	{
+		result = commandList->Reset(cmdAllocator, nullptr);
+		assert(SUCCEEDED(result));
+	}
+	else
+	{
+		assert(SUCCEEDED(0));
+	}
 }
 
+void DirectXCore::SetBackScreenColor(float red, float green, float blue, float alpha)
+{
+	clearColor[0] = red;
+	clearColor[1] = green;
+	clearColor[2] = blue;
+	clearColor[3] = alpha;
+}
+#pragma region ゲッター
 ID3D12Device* DirectXCore::GetDevice() {
 	return device;
 }
@@ -242,3 +315,4 @@ ID3D12Fence* DirectXCore::GetFence() {
 UINT64 DirectXCore::GetFenceVal() {
 	return fenceVal;
 }
+#pragma endregion

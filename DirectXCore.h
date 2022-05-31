@@ -29,6 +29,7 @@ private:
 	
 	// スワップチェーンの設定
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 
 	// デスクリプタヒープの設定
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};

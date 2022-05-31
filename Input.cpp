@@ -9,10 +9,15 @@
 
 using namespace DirectX;
 
-void Input::Initialize(HRESULT result, HWND hwnd, WNDCLASSEX w)//初期化
+void Input::Initialize()//初期化
 {
+
+	HRESULT result;
+
+	WinApi* app = WinApi::GetInstance();
+
 	//DirectInputの初期化
-	result = DirectInput8Create(w.hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&directInput, nullptr);
+	result = DirectInput8Create(app->GetWndclassex().hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&directInput, nullptr);
 	assert(SUCCEEDED(result));
 
 	//キーボードデバイスの生成
@@ -24,7 +29,7 @@ void Input::Initialize(HRESULT result, HWND hwnd, WNDCLASSEX w)//初期化
 	assert(SUCCEEDED(result));
 
 	//排他制御レベルのセット
-	result = keyboard->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+	result = keyboard->SetCooperativeLevel(app->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 	assert(SUCCEEDED(result));
 }
 
@@ -35,6 +40,7 @@ void Input::Update() {
 	{
 		oldkey[i] = key[i];
 	}
+	//キーボード情報の取得開始
 	keyboard->Acquire();
 	keyboard->GetDeviceState(sizeof(key), key);
 }

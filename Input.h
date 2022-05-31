@@ -8,7 +8,7 @@ class Input {
 public:
 	Input() = default;
 	~Input() = default;
-	void Initialize(HRESULT result, HWND hwnd, WNDCLASSEX w);
+	void Initialize();
 	void Update();
 	bool PushKey(uint8_t index);
 	bool ReleaseKey(uint8_t index);
