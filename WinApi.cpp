@@ -4,21 +4,21 @@
 HWND WinApi::hwnd = nullptr;
 WNDCLASSEX WinApi::w = {};
 
-//ウィンドウプロシージャ
-LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
-{
-	// メッセージに応じてゲーム固有の処理を行う
-	switch (msg)
-	{
-	case WM_DESTROY://ウィンドウが破棄されたとき
-
-		PostQuitMessage(0);//OSに終了を伝える
-		return 0;
-	}
-
-	//標準のメッセージ処理を行う
-	return DefWindowProc(hwnd, msg, wparam, lparam);
-}
+////ウィンドウプロシージャ
+//LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+//{
+//	// メッセージに応じてゲーム固有の処理を行う
+//	switch (msg)
+//	{
+//	case WM_DESTROY://ウィンドウが破棄されたとき
+//
+//		PostQuitMessage(0);//OSに終了を伝える
+//		return 0;
+//	}
+//
+//	//標準のメッセージ処理を行う
+//	return DefWindowProc(hwnd, msg, wparam, lparam);
+//}
 
 void WinApi::CreateGameWindow(const wchar_t* title, UINT windowStyle, int32_t Width, int32_t Height)
 {
@@ -27,7 +27,7 @@ void WinApi::CreateGameWindow(const wchar_t* title, UINT windowStyle, int32_t Wi
 
 	//ウィンドウクラス設定
 	w.cbSize = sizeof(WNDCLASSEX);
-	w.lpfnWndProc = (WNDPROC)WindowProc;	// ウィンドウプロシージャを設定
+	//w.lpfnWndProc = (WNDPROC)WindowProc;	// ウィンドウプロシージャを設定
 	w.lpszClassName = title;				// ウィンドウクラス名（ヘッダーで名前変更可能）
 	w.hInstance = GetModuleHandle(nullptr); // ウィンドウハンドル
 	w.hCursor = LoadCursor(NULL, IDC_ARROW);// カーソル設定
