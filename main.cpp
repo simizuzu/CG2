@@ -35,6 +35,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma endregion
 
 #pragma region 描画初期化処理
+#pragma region 頂点データ初期化
 	// 頂点データ構造体
 	struct Vertex
 	{
@@ -56,7 +57,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		0, 1, 2, // 三角形1つ目
 		1, 2, 3, // 三角形2つ目
 	};
-
+#pragma endregion
 #pragma region 頂点バッファ
 	// 頂点データ全体のサイズ = 頂点データ一つ分のサイズ * 頂点データの要素数
 	UINT sizeVB = static_cast<UINT>(sizeof(vertices[0]) * _countof(vertices));
