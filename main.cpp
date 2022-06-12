@@ -184,6 +184,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	textureResourceDesc.MipLevels = 1;
 	textureResourceDesc.SampleDesc.Count = 1;
 
+
 	// テクスチャバッファの生成
 	ID3D12Resource* texBuff = nullptr;
 	result = directXCore->GetDevice()->CreateCommittedResource(
