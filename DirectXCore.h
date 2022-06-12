@@ -32,7 +32,10 @@ private:
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 
 	// デスクリプタヒープの設定
+	// レンダーターゲットビュー
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
+	// シェーダーリソースビュー
+	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc{};
 
 	// バックバッファ
 	std::vector<ID3D12Resource*> backBuffers;

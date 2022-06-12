@@ -63,7 +63,6 @@ HRESULT DirectXCore::InitializeDXGI() {
 		}
 	}
 
-
 	return result;
 }
 
