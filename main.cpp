@@ -205,7 +205,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		imageData[i].x = 1.0f;    // R
 		imageData[i].y = 0.0f;    // G
 		imageData[i].z = 0.0f;    // B
-		imageData[i].w = 1.0f;    // A
+		if ((i / 10) % 2 == 1) {
+			imageData[i].w = 1.0f;    // A
+		}
 	}
 
 	// ÉqÅ[Évê›íË
