@@ -6,6 +6,7 @@
 #include <string>
 #include <DirectXMath.h>
 #include <d3dcompiler.h>
+#include <random>
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")
 #pragma comment(lib,"d3dcompiler.lib")
@@ -200,14 +201,16 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// 画像イメージデータ配列
 	XMFLOAT4* imageData = new XMFLOAT4[imageDataCount]; // ※必ず後で解放する
 
+	std::random_device seed_gen;
+	std::mt19937_64 engine(seed_gen());
+	std::uniform_real_distribution<float>random(0.0f, 1.0f);
+
 	// 全ピクセルの色を初期化
 	for (size_t i = 0; i < imageDataCount; i++) {
-		imageData[i].x = 1.0f;    // R
-		imageData[i].y = 0.0f;    // G
-		imageData[i].z = 0.0f;    // B
-		if ((i / 10) % 2 == 1) {
-			imageData[i].w = 1.0f;    // A
-		}
+		imageData[i].x = random(engine);    // R
+		imageData[i].y = random(engine);    // G
+		imageData[i].z = random(engine);    // B
+		imageData[i].w = 1.0f;    // A
 	}
 
 	// ヒープ設定
