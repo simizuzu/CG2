@@ -142,9 +142,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DirectXCore.cpp" />
+    <ClCompile Include="DX12Math.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="WinApi.cpp" />
+    <ClCompile Include="WorldTransform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasicPS.hlsl">
@@ -164,8 +167,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DirectXCore.h" />
+    <ClInclude Include="DX12Math.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="Sprite.h" />
     <ClInclude Include="WinApi.h" />
+    <ClInclude Include="WorldTransform.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Basic.hlsli" />

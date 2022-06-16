@@ -96,4 +96,7 @@ public:
 	ID3D12DescriptorHeap* GetRtvHeap();
 	ID3D12Fence* GetFence();
 	UINT64 GetFenceVal();
+
+#pragma region テンプレート関数
+	void Constant(size_t size, ID3D12Resource*& Buff);
 };
