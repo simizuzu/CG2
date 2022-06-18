@@ -59,10 +59,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// 頂点データ
 	Vertex vertices[] = {
 		// x      y     z       u     v
-		{{  0.0f, 100.0f, 0.0f}, {0.0f, 1.0f}}, // 左下
-		{{  0.0f,   0.0f, 0.0f}, {0.0f, 0.0f}}, // 左上
-		{{100.0f, 100.0f, 0.0f}, {1.0f, 1.0f}}, // 右下
-		{{100.0f,   0.0f, 0.0f}, {1.0f, 0.0f}}, // 右上
+		{{-50.0f, -50.0f, 50.0f}, {0.0f, 1.0f}}, // 左下
+		{{-50.0f,  50.0f, 50.0f}, {0.0f, 0.0f}}, // 左上
+		{{ 50.0f, -50.0f, 50.0f}, {1.0f, 1.0f}}, // 右下
+		{{ 50.0f,  50.0f, 50.0f}, {1.0f, 0.0f}}, // 右上
 	};
 
 	// インデックスデータ
@@ -186,12 +186,23 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 
 	result = constBufferTransform->Map(0, nullptr, (void**)&constMapTransform); // マッピング
-	// 単位行列を代入
-	constMapTransform->mat = DirectX::XMMatrixOrthographicOffCenterLH(
-		0.0f, winApi->GetWindowSize().window_width,
-		winApi->GetWindowSize().window_height, 0.0f,
-		0.0f, 1.0f
+	//// 平行投影変換
+	//constMapTransform->mat = DirectX::XMMatrixOrthographicOffCenterLH(
+	//	0.0f, winApi->GetWindowSize().window_width,
+	//	winApi->GetWindowSize().window_height, 0.0f,
+	//	0.0f, 1.0f
+	//);
+
+	// 透視投影変換
+	XMMATRIX matProjection = 
+		DirectX::XMMatrixPerspectiveFovLH(
+		XMConvertToRadians(45.0f),															 // 上下画角45度
+		(float)winApi->GetWindowSize().window_width / winApi->GetWindowSize().window_height, // アスペクト比（画面横幅/画面縦幅）
+		0.1f, 1000.0f																		 // 前端, 奥端
 	);
+
+	// 定数バッファに転送
+	constMapTransform->mat = matProjection;
 
 	/*constMapTransform->mat.r[0].m128_f32[0] = 2.0f / winApi->GetWindowSize().window_width;
 	constMapTransform->mat.r[1].m128_f32[1] = -2.0f / winApi->GetWindowSize().window_height;
