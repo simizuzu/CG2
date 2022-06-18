@@ -170,7 +170,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	ID3D12Resource* constBufferTransform = nullptr;
 	ConstBufferDataTransform* constMapTransform = nullptr;
-	
+
 	ID3D12Resource* constBuffMaterial = nullptr;
 
 	directXCore->Constant(sizeof(ConstBufferDataMaterial), constBuffMaterial);
@@ -187,12 +187,16 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	result = constBufferTransform->Map(0, nullptr, (void**)&constMapTransform); // マッピング
 	// 単位行列を代入
-	constMapTransform->mat = XMMatrixIdentity();
+	constMapTransform->mat = DirectX::XMMatrixOrthographicOffCenterLH(
+		0.0f, winApi->GetWindowSize().window_width,
+		winApi->GetWindowSize().window_height, 0.0f,
+		0.0f, 1.0f
+	);
 
-	constMapTransform->mat.r[0].m128_f32[0] = 2.0f / winApi->GetWindowSize().window_width;
+	/*constMapTransform->mat.r[0].m128_f32[0] = 2.0f / winApi->GetWindowSize().window_width;
 	constMapTransform->mat.r[1].m128_f32[1] = -2.0f / winApi->GetWindowSize().window_height;
 	constMapTransform->mat.r[3].m128_f32[0] = -1.0f;
-	constMapTransform->mat.r[3].m128_f32[1] = 1.0f;
+	constMapTransform->mat.r[3].m128_f32[1] = 1.0f;*/
 
 #pragma endregion
 
