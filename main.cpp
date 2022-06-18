@@ -59,10 +59,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// 頂点データ
 	Vertex vertices[] = {
 		// x      y     z       u     v
-		{{-50.0f, -50.0f, 50.0f}, {0.0f, 1.0f}}, // 左下
-		{{-50.0f,  50.0f, 50.0f}, {0.0f, 0.0f}}, // 左上
-		{{ 50.0f, -50.0f, 50.0f}, {1.0f, 1.0f}}, // 右下
-		{{ 50.0f,  50.0f, 50.0f}, {1.0f, 0.0f}}, // 右上
+		{{-50.0f, -50.0f, 0.0f}, {0.0f, 1.0f}}, // 左下
+		{{-50.0f,  50.0f, 0.0f}, {0.0f, 0.0f}}, // 左上
+		{{ 50.0f, -50.0f, 0.0f}, {1.0f, 1.0f}}, // 右下
+		{{ 50.0f,  50.0f, 0.0f}, {1.0f, 0.0f}}, // 右上
 	};
 
 	// インデックスデータ
@@ -193,16 +193,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//	0.0f, 1.0f
 	//);
 
-	// 透視投影変換
-	XMMATRIX matProjection = 
-		DirectX::XMMatrixPerspectiveFovLH(
-		XMConvertToRadians(45.0f),															 // 上下画角45度
-		(float)winApi->GetWindowSize().window_width / winApi->GetWindowSize().window_height, // アスペクト比（画面横幅/画面縦幅）
-		0.1f, 1000.0f																		 // 前端, 奥端
-	);
 
-	// 定数バッファに転送
-	constMapTransform->mat = matProjection;
+	XMMATRIX matView;
+	XMFLOAT3 eye(100, 100, -100); // 視点座標
+	XMFLOAT3 target(0, 0, 0); // 注視点座標
+	XMFLOAT3 up(0, 1, 0);	  // 上方向ベクトル
+	
 
 	/*constMapTransform->mat.r[0].m128_f32[0] = 2.0f / winApi->GetWindowSize().window_width;
 	constMapTransform->mat.r[1].m128_f32[1] = -2.0f / winApi->GetWindowSize().window_height;
@@ -484,6 +480,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	input->Initialize();
 #pragma endregion
 
+	float angle = 0.0f; // カメラの回転角
 
 #pragma region ゲームループ
 	//ゲームループ
@@ -494,9 +491,20 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		input->Update();
 
+
 		directXCore->DrawStart();
 
 		//DirectX毎フレーム処理　ここから
+
+		// 透視投影変換
+		XMMATRIX matProjection = DirectX::XMMatrixPerspectiveFovLH(XMConvertToRadians(45.0f),
+			(float)winApi->GetWindowSize().window_width / winApi->GetWindowSize().window_height, 0.1f, 1000.0f);
+
+		// ビュー変換行列
+		matView = DirectX::XMMatrixLookAtLH(XMLoadFloat3(&eye), XMLoadFloat3(&target), XMLoadFloat3(&up));
+
+		// 定数バッファに転送
+		constMapTransform->mat = matView * matProjection;
 		// 4.描画コマンドここから
 		directXCore->GetCommandList()->IASetIndexBuffer(&ibView);
 
@@ -524,7 +532,27 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		// 描画コマンド
 		directXCore->GetCommandList()->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
 
+
+		if (input->PushKey(DIK_D) || input->PushKey(DIK_A)) {
+			if (input->PushKey(DIK_D)) {
+				angle += XMConvertToRadians(1.0f);
+			}
+			else if (input->PushKey(DIK_A)) {
+				angle -= XMConvertToRadians(1.0f);
+			}
+
+			// angleラジアンだけY軸回りに回転。半径は-100
+			eye.x = -100 * sinf(angle);
+			eye.z = -100 * cosf(angle);
+		}
+
+		constMapTransform->mat =
+			DirectX::XMMatrixLookAtLH(XMLoadFloat3(&eye), XMLoadFloat3(&target), XMLoadFloat3(&up)) *
+			DirectX::XMMatrixPerspectiveFovLH(XMConvertToRadians(45.0f),
+				(float)winApi->GetWindowSize().window_width / winApi->GetWindowSize().window_height, 0.1f, 1000.0f);
+
 		// 4.描画コマンドここまで
+
 		//DirectX毎フレーム処理　ここまで
 		directXCore->DrawEnd();
 	}
