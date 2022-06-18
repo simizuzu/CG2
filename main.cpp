@@ -193,12 +193,28 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//	0.0f, 1.0f
 	//);
 
-
+	// ビュー変換行列
 	XMMATRIX matView;
 	XMFLOAT3 eye(100, 100, -100); // 視点座標
 	XMFLOAT3 target(0, 0, 0); // 注視点座標
 	XMFLOAT3 up(0, 1, 0);	  // 上方向ベクトル
-	
+
+	// ワールド変換行列
+	XMMATRIX matWorld;
+
+	// スケーリング
+	XMMATRIX matScale; // スケーリング行列
+	// 回転
+	XMMATRIX matRot;
+	// 平行移動
+	XMMATRIX matTrans; // 平行移動行列
+
+	// スケーリング倍率
+	XMFLOAT3 scale = { 1.0f,1.0f,1.0f };
+	// 回転角
+	XMFLOAT3 rotation = { 0.0f,0.0f,0.0f };
+	// 座標
+	XMFLOAT3 position = { 0.0f,0.0f,0.0f };
 
 	/*constMapTransform->mat.r[0].m128_f32[0] = 2.0f / winApi->GetWindowSize().window_width;
 	constMapTransform->mat.r[1].m128_f32[1] = -2.0f / winApi->GetWindowSize().window_height;
@@ -491,7 +507,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		input->Update();
 
-
 		directXCore->DrawStart();
 
 		//DirectX毎フレーム処理　ここから
@@ -546,7 +561,41 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			eye.z = -100 * cosf(angle);
 		}
 
+		// いずれかのキーを押していたら
+		if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT)) {
+			// 座標を移動する処理
+			if (input->PushKey(DIK_UP)) {
+				position.z += 1.0f;
+			}
+			else if (input->PushKey(DIK_DOWN)) {
+				position.z -= 1.0f;
+			}
+			if (input->PushKey(DIK_RIGHT)) {
+				position.x += 1.0f;
+			}
+			else if (input->PushKey(DIK_LEFT)) {
+				position.x -= 1.0f;
+			}
+		}
+
+		matScale = DirectX::XMMatrixScaling(scale.x,scale.y,scale.z);
+		
+
+		matRot = DirectX::XMMatrixIdentity();
+		matRot *= DirectX::XMMatrixRotationZ(XMConvertToRadians(rotation.z)); // Z軸回りに45度回転
+		matRot *= DirectX::XMMatrixRotationX(XMConvertToRadians(rotation.x)); // Z軸回りに45度回転
+		matRot *= DirectX::XMMatrixRotationY(XMConvertToRadians(rotation.y)); // Z軸回りに45度回転
+		
+		matTrans = DirectX::XMMatrixTranslation(position.x, position.y, position.z);
+		
+		matWorld = DirectX::XMMatrixIdentity(); // 変形をリセット
+		matWorld *= matScale;					// ワールド行列にスケーリングを反映
+		matWorld += matRot;						// ワールド行列に開店を反映
+		matWorld *= matTrans;					// ワールド行列に平行移動を反映
+
+		// 転送
 		constMapTransform->mat =
+			matWorld *
 			DirectX::XMMatrixLookAtLH(XMLoadFloat3(&eye), XMLoadFloat3(&target), XMLoadFloat3(&up)) *
 			DirectX::XMMatrixPerspectiveFovLH(XMConvertToRadians(45.0f),
 				(float)winApi->GetWindowSize().window_width / winApi->GetWindowSize().window_height, 0.1f, 1000.0f);
