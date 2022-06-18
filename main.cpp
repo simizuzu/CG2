@@ -59,10 +59,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// 頂点データ
 	Vertex vertices[] = {
 		// x      y     z       u     v
-		{{-0.4f, -0.7f, 0.0f}, {0.0f, 1.0f}}, // 左下
-		{{-0.4f, +0.7f, 0.0f}, {0.0f, 0.0f}}, // 左上
-		{{+0.4f, -0.7f, 0.0f}, {1.0f, 1.0f}}, // 右下
-		{{+0.4f, +0.7f, 0.0f}, {1.0f, 0.0f}}, // 右上
+		{{  0.0f, 100.0f, 0.0f}, {0.0f, 1.0f}}, // 左下
+		{{  0.0f,   0.0f, 0.0f}, {0.0f, 0.0f}}, // 左上
+		{{100.0f, 100.0f, 0.0f}, {1.0f, 1.0f}}, // 右下
+		{{100.0f,   0.0f, 0.0f}, {1.0f, 0.0f}}, // 右上
 	};
 
 	// インデックスデータ
@@ -182,12 +182,17 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	assert(SUCCEEDED(result));
 
 	// 値を書き込むと自動的に転送される
-	constMapMaterial->color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);              // RGBAで半透明の赤
+	constMapMaterial->color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);              // RGBAで半透明の赤
 
 
 	result = constBufferTransform->Map(0, nullptr, (void**)&constMapTransform); // マッピング
 	// 単位行列を代入
 	constMapTransform->mat = XMMatrixIdentity();
+
+	constMapTransform->mat.r[0].m128_f32[0] = 2.0f / winApi->GetWindowSize().window_width;
+	constMapTransform->mat.r[1].m128_f32[1] = -2.0f / winApi->GetWindowSize().window_height;
+	constMapTransform->mat.r[3].m128_f32[0] = -1.0f;
+	constMapTransform->mat.r[3].m128_f32[1] = 1.0f;
 
 #pragma endregion
 
