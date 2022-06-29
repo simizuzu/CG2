@@ -31,6 +31,10 @@ private:
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 
+	// 深度テストの設定
+	ID3D12Resource* depthBuff = nullptr;
+	ID3D12DescriptorHeap* dsvHeap = nullptr;
+
 	// デスクリプタヒープの設定
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
 
@@ -61,6 +65,9 @@ private:
 
 	//スワップチェインの生成
 	HRESULT CreateSwapChain();
+
+	//深度テスト
+	HRESULT CreateDepthHeap();
 
 	//コマンドまわり初期化
 	HRESULT InitializeCommand();
