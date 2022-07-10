@@ -72,5 +72,6 @@
     <None Include="Basic.hlsli">
       <Filter>シェーダー ファイル</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

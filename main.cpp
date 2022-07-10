@@ -49,7 +49,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma endregion
 
 #pragma region 描画初期化処理
-	
+
 #pragma region 頂点データ初期化
 	// 頂点データ構造体
 	struct Vertex
@@ -241,7 +241,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// 0番の定数バッファを生成
 	ID3D12Resource* constBuffTransform0 = nullptr;
 	ConstBufferDataTransform* constMapTransform0 = nullptr;
-	
+
 	ID3D12Resource* constBuffMaterial = nullptr;
 
 	directXCore->Constant(sizeof(ConstBufferDataMaterial), constBuffMaterial);
@@ -278,7 +278,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	XMFLOAT3 eye(0, 50, -50); // 視点座標
 	XMFLOAT3 target(0, 0, 0); // 注視点座標
 	XMFLOAT3 up(0, 1, 0);	  // 上方向ベクトル
-	
+
 	// 0番のワールド行列の作成
 
 	// スケーリング倍率
@@ -603,6 +603,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		// 定数バッファに転送
 		constMapTransform0->mat = matView * matProjection;
 
+		// プレイヤーを回転させる処理
 		if (input->PushKey(DIK_D) || input->PushKey(DIK_A)) {
 			if (input->PushKey(DIK_D)) {
 				angle += XMConvertToRadians(1.0f);
@@ -616,22 +617,23 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			eye.z = -100 * cosf(angle);
 		}
 
-		// いずれかのキーを押していたら
-		if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT)) {
-			// 座標を移動する処理
-			if (input->PushKey(DIK_UP)) {
-				position.z += 1.0f;
-			}
-			else if (input->PushKey(DIK_DOWN)) {
-				position.z -= 1.0f;
-			}
-			if (input->PushKey(DIK_RIGHT)) {
-				position.x += 1.0f;
-			}
-			else if (input->PushKey(DIK_LEFT)) {
-				position.x -= 1.0f;
-			}
+		// 敵を回転させる処理
+
+
+		// プレイヤー座標を移動する処理
+		if (input->PushKey(DIK_UP)) {
+			position.z += 1.0f;
 		}
+		else if (input->PushKey(DIK_DOWN)) {
+			position.z -= 1.0f;
+		}
+		if (input->PushKey(DIK_RIGHT)) {
+			position.x += 1.0f;
+		}
+		else if (input->PushKey(DIK_LEFT)) {
+			position.x -= 1.0f;
+		}
+
 		// 0番のワールド変換行列
 		XMMATRIX matWorld; // ワールド変換行列
 		XMMATRIX matScale; // スケーリング行列
