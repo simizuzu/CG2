@@ -35,8 +35,8 @@ struct ConstBufferDataTransform {
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	WinApi* winApi = nullptr;
-	winApi = winApi->GetInstance();
-	winApi->CreateGameWindow();
+	winApi = winApi->GetInstance(); // WindowsAPIクラス読み込み
+	winApi->CreateGameWindow(); // ウィンドウ生成
 
 #pragma endregion
 

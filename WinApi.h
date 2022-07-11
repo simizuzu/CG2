@@ -41,7 +41,7 @@ private:
 	LPARAM lparam;
 	WINDOWSIZE WindowSize;
 
-	// 隠し
+	// コンストラクタ・デストラクタ
 	WinApi() = default;
 	~WinApi() = default;
 };
