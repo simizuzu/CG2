@@ -49,6 +49,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 #pragma endregion
 
+
+
+
+
 #pragma region 描画初期化処理
 
 #pragma region 頂点データ初期化
