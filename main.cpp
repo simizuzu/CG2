@@ -244,7 +244,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	ID3D12Resource* constBuffMaterial = nullptr;
 
-	directXCore->Constant(sizeof(ConstBufferDataMaterial), constBuffMaterial);
+	directXCore->CreateConstBuff (sizeof(ConstBufferDataMaterial), constBuffMaterial);
 	directXCore->Constant(sizeof(ConstBufferDataTransform), constBuffTransform0);
 
 	// 定数バッファのマッピング

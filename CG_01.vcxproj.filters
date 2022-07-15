@@ -40,21 +40,33 @@
     <Filter Include="ヘッダー ファイル\2D">
       <UniqueIdentifier>{a8530394-0a22-4e38-8cbf-56cb82a72827}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\3D">
+      <UniqueIdentifier>{1ea4de33-a5e3-4492-932d-ebc42a602c19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\3D">
+      <UniqueIdentifier>{184267f8-d7dd-48ef-b6ae-6514b5a81d15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2D\Sprite">
+      <UniqueIdentifier>{9b46272c-42b1-4ff1-8f24-eaf0a5c95228}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2D\Sprite">
+      <UniqueIdentifier>{2ba6736a-698d-4541-9320-14d7ee780f20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Camera">
+      <UniqueIdentifier>{fe943de6-ae47-4466-931e-ff55a3f673fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Camera">
+      <UniqueIdentifier>{1e6bed14-91f8-4a81-935e-9b160b005f0b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="WorldTransform.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="DX12Math.cpp">
       <Filter>ソース ファイル\Math</Filter>
     </ClCompile>
     <ClCompile Include="Mesh.cpp">
-      <Filter>ソース ファイル\2D</Filter>
-    </ClCompile>
-    <ClCompile Include="Sprite.cpp">
       <Filter>ソース ファイル\2D</Filter>
     </ClCompile>
     <ClCompile Include="DirectXCore.cpp">
@@ -78,6 +90,18 @@
     <ClCompile Include="Matrix4.cpp">
       <Filter>ソース ファイル\Math</Filter>
     </ClCompile>
+    <ClCompile Include="Sprite2D.cpp">
+      <Filter>ソース ファイル\2D\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>ソース ファイル\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite3D.cpp">
+      <Filter>ソース ファイル\2D\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteCreate.cpp">
+      <Filter>ソース ファイル\2D\Sprite</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasicPS.hlsl">
@@ -88,9 +112,6 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="WorldTransform.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="DX12Math.h">
       <Filter>ヘッダー ファイル\Math</Filter>
     </ClInclude>
@@ -104,9 +125,6 @@
       <Filter>ヘッダー ファイル\Input</Filter>
     </ClInclude>
     <ClInclude Include="Mesh.h">
-      <Filter>ヘッダー ファイル\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="Sprite.h">
       <Filter>ヘッダー ファイル\2D</Filter>
     </ClInclude>
     <ClInclude Include="Vector2.h">
@@ -123,6 +141,21 @@
     </ClInclude>
     <ClInclude Include="ErrorException.h">
       <Filter>ヘッダー ファイル\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite2D.h">
+      <Filter>ヘッダー ファイル\2D\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>ヘッダー ファイル\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite3D.h">
+      <Filter>ヘッダー ファイル\2D\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteCreate.h">
+      <Filter>ヘッダー ファイル\2D\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteInterface.h">
+      <Filter>ヘッダー ファイル\2D\Sprite</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

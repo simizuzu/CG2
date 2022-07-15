@@ -143,18 +143,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DirectXCore.cpp" />
     <ClCompile Include="DX12Math.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Matrix4.cpp" />
     <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="Sprite2D.cpp" />
+    <ClCompile Include="Sprite3D.cpp" />
+    <ClCompile Include="SpriteCreate.cpp" />
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="Vector3.cpp" />
     <ClCompile Include="Vector4.cpp" />
     <ClCompile Include="WinApi.cpp" />
-    <ClCompile Include="WorldTransform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasicPS.hlsl">
@@ -173,18 +175,21 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="DirectXCore.h" />
     <ClInclude Include="DX12Math.h" />
     <ClInclude Include="ErrorException.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Matrix4.h" />
     <ClInclude Include="Mesh.h" />
-    <ClInclude Include="Sprite.h" />
+    <ClInclude Include="Sprite2D.h" />
+    <ClInclude Include="Sprite3D.h" />
+    <ClInclude Include="SpriteCreate.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="Vector4.h" />
     <ClInclude Include="WinApi.h" />
-    <ClInclude Include="WorldTransform.h" />
+    <ClInclude Include="SpriteInterface.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Basic.hlsli" />

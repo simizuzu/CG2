@@ -1,9 +1,5 @@
 #pragma once
-#include <Windows.h>
-#include <d3d12.h>
-#include <vector>
-#include <dxgi1_6.h>
-#include <string>
+#include "ErrorException.h"
 
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")
@@ -105,5 +101,37 @@ public:
 	UINT64 GetFenceVal();
 
 #pragma region テンプレート関数
-	void Constant(size_t size, ID3D12Resource*& Buff);
+	//定数バッファ作成
+	template<typename T>
+	void CreateConstBuff(T*& buff, Microsoft::WRL::ComPtr<ID3D12Resource>& constBuff)
+	{
+
+		// 頂点バッファの設定
+		D3D12_HEAP_PROPERTIES heapProp{}; // ヒープ設定
+		heapProp.Type = D3D12_HEAP_TYPE_UPLOAD; // GPUへの転送用
+		// リソース設定
+		D3D12_RESOURCE_DESC resDesc{};
+		resDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+		resDesc.Width = (sizeof(T) + 0xff) & ~0xff; // 頂点データ全体のサイズ
+		resDesc.Height = 1;
+		resDesc.DepthOrArraySize = 1;
+		resDesc.MipLevels = 1;
+		resDesc.SampleDesc.Count = 1;
+		resDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+
+		//定数バッファの生成
+		result = device->CreateCommittedResource(
+			&heapProp,
+			D3D12_HEAP_FLAG_NONE,
+			&resDesc,
+			D3D12_RESOURCE_STATE_GENERIC_READ,
+			nullptr,
+			IID_PPV_ARGS(constBuff.ReleaseAndGetAddressOf()));
+		assert(SUCCEEDED(result));
+
+		//定数バッファのマッピング
+		result = constBuff->Map(0, nullptr, (void**)&buff);//マッピング
+		assert(SUCCEEDED(result));
+
+	}
 };
