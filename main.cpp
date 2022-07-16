@@ -9,8 +9,6 @@
 #include <random>
 #include <DirectXTex.h>
 
-//
-
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")
 #pragma comment(lib,"d3dcompiler.lib")
@@ -30,6 +28,24 @@ struct ConstBufferDataMaterial {
 struct ConstBufferDataTransform {
 	XMMATRIX mat;
 };
+
+// 3Dオブジェクト型
+struct Object3d
+{
+	// 定数バッファ（行列用）
+	ID3D12Resource* constBuffTransform;
+	// 定数バッファマップ（行列用）
+	ConstBufferDataMaterial* constMapTransform;
+	// アフィン変換情報
+	XMFLOAT3 scale = { 1,1,1 };
+	XMFLOAT3 rotation = { 0,0,0 };
+	XMFLOAT3 position = { 0,0,0 };
+	// ワールド変換行列
+	XMMATRIX matworld;
+	// 親オブジェクトへのポインタ
+	Object3d* parent = nullptr;
+};
+
 
 //Windowsアプリでのエントリーポイント(main関数)
 #pragma region WindowsAPI初期化処理
@@ -247,7 +263,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	ID3D12Resource* constBuffMaterial = nullptr;
 
 	directXCore->Constant(sizeof(ConstBufferDataMaterial), constBuffMaterial);
-	directXCore->Constant(sizeof(ConstBufferDataTransform), constBuffTransform0);
+	//directXCore->Constant(sizeof(ConstBufferDataTransform), constBuffTransform0);
 
 	// 定数バッファのマッピング
 	ConstBufferDataMaterial* constMapMaterial = nullptr;
@@ -256,8 +272,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	// 値を書き込むと自動的に転送される
 	constMapMaterial->color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);              // RGBAで半透明の赤
-	result = constBuffTransform0->Map(0, nullptr, (void**)&constMapTransform0); // マッピング
-	assert(SUCCEEDED(result));
+	//result = constBuffTransform0->Map(0, nullptr, (void**)&constMapTransform0); // マッピング
+	//assert(SUCCEEDED(result));
 
 	// 1番の定数バッファを生成
 	ID3D12Resource* constBuffTransform1 = nullptr;
@@ -275,7 +291,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//	0.0f, 1.0f
 	//);
 
-	// ビュー変換行列
+	//// ビュー変換行列
 	XMMATRIX matView;
 	XMFLOAT3 eye(0, 50, -50); // 視点座標
 	XMFLOAT3 target(0, 0, 0); // 注視点座標
@@ -636,29 +652,29 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			position.x -= 1.0f;
 		}
 
-		// 0番のワールド変換行列
-		XMMATRIX matWorld; // ワールド変換行列
-		XMMATRIX matScale; // スケーリング行列
-		XMMATRIX matRot;   // 回転行列
-		XMMATRIX matTrans; // 平行移動行列
+		//// 0番のワールド変換行列
+		//XMMATRIX matWorld; // ワールド変換行列
+		//XMMATRIX matScale; // スケーリング行列
+		//XMMATRIX matRot;   // 回転行列
+		//XMMATRIX matTrans; // 平行移動行列
 
-		// 各種変換行列を計算
-		matScale = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
+		//// 各種変換行列を計算
+		//matScale = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
 
-		matRot = DirectX::XMMatrixIdentity();
-		matRot *= DirectX::XMMatrixRotationZ(XMConvertToRadians(rotation.z)); // Z軸回りに45度回転
-		matRot *= DirectX::XMMatrixRotationX(XMConvertToRadians(rotation.x)); // Z軸回りに45度回転
-		matRot *= DirectX::XMMatrixRotationY(XMConvertToRadians(rotation.y)); // Z軸回りに45度回転
+		//matRot = DirectX::XMMatrixIdentity();
+		//matRot *= DirectX::XMMatrixRotationZ(XMConvertToRadians(rotation.z)); // Z軸回りに45度回転
+		//matRot *= DirectX::XMMatrixRotationX(XMConvertToRadians(rotation.x)); // Z軸回りに45度回転
+		//matRot *= DirectX::XMMatrixRotationY(XMConvertToRadians(rotation.y)); // Z軸回りに45度回転
 
-		matTrans = DirectX::XMMatrixTranslation(position.x, position.y, position.z);
+		//matTrans = DirectX::XMMatrixTranslation(position.x, position.y, position.z);
 
-		matWorld = DirectX::XMMatrixIdentity(); // 変形をリセット
-		matWorld *= matScale;					// ワールド行列にスケーリングを反映
-		matWorld *= matRot;						// ワールド行列に回転を反映
-		matWorld *= matTrans;					// ワールド行列に平行移動を反映
+		//matWorld = DirectX::XMMatrixIdentity(); // 変形をリセット
+		//matWorld *= matScale;					// ワールド行列にスケーリングを反映
+		//matWorld *= matRot;						// ワールド行列に回転を反映
+		//matWorld *= matTrans;					// ワールド行列に平行移動を反映
 
-		// 転送
-		constMapTransform0->mat = matWorld * matView * matProjection;
+		//// 転送
+		//constMapTransform0->mat = matWorld * matView * matProjection;
 
 		// 1番のワールド行列
 		XMMATRIX matWorld1;
@@ -694,15 +710,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		// SRVヒープの先頭にあるSRVをルートパラメータ1番に設定
 		directXCore->GetCommandList()->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
 
-		// 0番定数バッファビュー(CBV)の設定コマンド
-		directXCore->GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform0->GetGPUVirtualAddress());
-		// 描画コマンド
-		directXCore->GetCommandList()->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
+		//// 0番定数バッファビュー(CBV)の設定コマンド
+		//directXCore->GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform0->GetGPUVirtualAddress());
+		//// 描画コマンド
+		//directXCore->GetCommandList()->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
 
-		// 1番定数バッファビュー(CBV)の設定コマンド
-		directXCore->GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform1->GetGPUVirtualAddress());
-		// 描画コマンド
-		directXCore->GetCommandList()->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
+		//// 1番定数バッファビュー(CBV)の設定コマンド
+		//directXCore->GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform1->GetGPUVirtualAddress());
+		//// 描画コマンド
+		//directXCore->GetCommandList()->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
 		// 4.描画コマンドここまで
 
 		//DirectX毎フレーム処理　ここまで
