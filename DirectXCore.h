@@ -78,6 +78,8 @@ private:
 	//デバッグレイヤーを有効にする
 	void EnableDebugLayer();
 
+	//エラーの抑制
+	void ErrorSuppression();
 
 public:
 	static DirectXCore* GetInstance();

@@ -41,14 +41,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="BasicPS.hlsl">
-      <Filter>シェーダー ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="BasicVS.hlsl">
-      <Filter>シェーダー ファイル</Filter>
-    </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="WinApi.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -69,9 +61,17 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Basic.hlsli">
+    <None Include="packages.config" />
+    <None Include="Resources\shaders\Basic.hlsli">
       <Filter>シェーダー ファイル</Filter>
     </None>
-    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Resources\shaders\BasicPS.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\BasicVS.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

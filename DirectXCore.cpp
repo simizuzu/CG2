@@ -212,24 +212,59 @@ HRESULT DirectXCore::CreateFence() {
 
 void DirectXCore::EnableDebugLayer() {
 	//デバックレイヤーをオンに
-	ID3D12Debug* debugController;
+	ID3D12Debug1* debugController;
 
 	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
 		debugController->EnableDebugLayer();
+		debugController->SetEnableGPUBasedValidation(TRUE);
 	}
+}
+
+void DirectXCore::ErrorSuppression() {
+
+	ID3D12InfoQueue* infoQueue;
+	HRESULT result;
+	result = (device->QueryInterface(IID_PPV_ARGS(&infoQueue)));
+	if (SUCCEEDED(result)) {
+		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);
+		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);
+		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);
+		infoQueue->Release();
+	}
+
+	// 抑制するエラー
+	D3D12_MESSAGE_ID denyIds[] = {
+		/*
+		 * Windows11でのDXGIデバックレイヤーとDX12デバックレイヤーの相互操作バグによるエラーメッセージ
+		 * https://stackoverflow.com/questions/69805245/directx-12-application-is-crashing-in-windows-11
+		 */
+		D3D12_MESSAGE_ID_RESOURCE_BARRIER_MISMATCHING_COMMAND_LIST_TYPE
+	};
+	//抑制するレベル
+	D3D12_MESSAGE_SEVERITY severities[] = { D3D12_MESSAGE_SEVERITY_INFO };
+	D3D12_INFO_QUEUE_FILTER filter{};
+	filter.DenyList.NumIDs = _countof(denyIds);
+	filter.DenyList.pIDList = (denyIds);
+	filter.DenyList.NumSeverities = _countof(severities);
+	filter.DenyList.pSeverityList = severities;
+
+	//指定したエラーの表示を抑制する
+	infoQueue->PushStorageFilter(&filter);
 }
 
 void DirectXCore::InitializeDirectXCore() {
 #ifdef _DEBUG
 	EnableDebugLayer();
 #endif
-
 	//DirectX12関連初期化
 	if (FAILED(InitializeDXGI()))
 	{
 		assert(0);
 		return;
 	}
+#ifdef _DEBUG
+	ErrorSuppression();
+#endif
 	if (FAILED(InitializeCommand()))
 	{
 		assert(0);
