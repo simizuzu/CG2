@@ -1,9 +1,10 @@
 #pragma once
 #define DIRECTINPUT_VERSION 0x0800	//DirectInputのバージョン指定
+#include <dinput.h>
 #include <DirectXMath.h>
 #include <Windows.h>
-#include <dinput.h>
 #include <array>
+#include <wrl.h>
 #include "WinApi.h"
 
 #pragma comment(lib,"dinput8.lib")
@@ -13,6 +14,8 @@ using namespace DirectX;
 
 class Input {
 public:
+	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
+
 	Input() = default;
 	~Input() = default;
 	void Initialize();
@@ -24,8 +27,8 @@ public:
 
 private:
 
-	IDirectInput8* directInput = nullptr;
-	IDirectInputDevice8* keyboard = nullptr;
+	ComPtr<IDirectInput8> directInput = nullptr;
+	ComPtr<IDirectInputDevice8> keyboard;
 
 	BYTE oldkey[256] = {};
 	BYTE key[256] = {};
