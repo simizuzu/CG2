@@ -149,19 +149,19 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClCompile Include="Engine\base\TextureManager.cpp" />
+    <ClCompile Include="Engine\base\WinApi.cpp" />
     <ClCompile Include="Engine\input\Input.cpp" />
     <ClCompile Include="Engine\math\DX12Math.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="WinApi.cpp" />
     <ClCompile Include="WorldTransform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\2d\Sprite.h" />
     <ClInclude Include="Engine\base\DirectXCore.h" />
     <ClInclude Include="Engine\base\TextureManager.h" />
+    <ClInclude Include="Engine\base\WinApi.h" />
     <ClInclude Include="Engine\input\Input.h" />
     <ClInclude Include="Engine\math\DX12Math.h" />
-    <ClInclude Include="WinApi.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

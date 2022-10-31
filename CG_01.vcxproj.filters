@@ -75,7 +75,7 @@
     <ClCompile Include="Engine\base\TextureManager.cpp">
       <Filter>ソース ファイル\Base</Filter>
     </ClCompile>
-    <ClCompile Include="WinApi.cpp">
+    <ClCompile Include="Engine\base\WinApi.cpp">
       <Filter>ソース ファイル\Base</Filter>
     </ClCompile>
   </ItemGroup>
@@ -95,7 +95,7 @@
     <ClInclude Include="Engine\base\TextureManager.h">
       <Filter>ヘッダー ファイル\Base</Filter>
     </ClInclude>
-    <ClInclude Include="WinApi.h">
+    <ClInclude Include="Engine\base\WinApi.h">
       <Filter>ヘッダー ファイル\Base</Filter>
     </ClInclude>
   </ItemGroup>
