@@ -210,6 +210,30 @@ namespace Math
 		void MakeRotation(float x, float y, float z);
 
 		/// <summary>
+		/// 平行投影変換行列を生成(左手系)
+		/// </summary>
+		/// <param name="left"> : 左側</param>
+		/// <param name="right"> : 右側</param>
+		/// <param name="bottom"> : 下側</param>
+		/// <param name="top"> : 上側</param>
+		/// <param name="near_"> : ニアクリップ距離</param>
+		/// <param name="far_"> : ファークリップ距離</param>
+		/// <param name="matrix"> : 代入する行列</param>
+		void MakeOrthogonalL(float left, float right, float bottom, float top, float near_, float far_, Matrix4& matrix);
+
+		/// <summary>
+		/// 平行投影変換行列を生成(右手系)
+		/// </summary>
+		/// <param name="left"> : 左側</param>
+		/// <param name="right"> : 右側</param>
+		/// <param name="bottom"> : 下側</param>
+		/// <param name="top"> : 上側</param>
+		/// <param name="near_"> : ニアクリップ距離</param>
+		/// <param name="far_"> : ファークリップ距離</param>
+		/// <param name="matrix"> : 代入する行列</param>
+		void MakeOrthogonalR(float left, float right, float bottom, float top, float near_, float far_, Matrix4& matrix);
+
+		/// <summary>
 		/// DirectX::XMMATRIX型への暗黙の型変換。
 		/// </summary>
 		operator DirectX::XMMATRIX() const;

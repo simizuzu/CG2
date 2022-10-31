@@ -146,6 +146,7 @@
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="WinApi.cpp" />
     <ClCompile Include="WorldTransform.cpp" />
   </ItemGroup>
@@ -154,6 +155,7 @@
     <ClInclude Include="DX12Math.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="TextureManager.h" />
     <ClInclude Include="WinApi.h" />
     <ClInclude Include="WorldTransform.h" />
   </ItemGroup>

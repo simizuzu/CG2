@@ -17,6 +17,7 @@
 #include "WinApi.h"
 #include "DirectXCore.h"
 #include "Input.h"
+#include "TextureManager.h"
 
 using namespace DirectX;
 
@@ -49,6 +50,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma endregion
 
 #pragma region 描画初期化処理
+	TextureManager* textureManager = textureManager->GetInstance();
+	textureManager->Initialize();
 
 #pragma region 頂点データ初期化
 	// 頂点データ構造体
@@ -173,11 +176,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	Vertex* vertMap = nullptr;
 	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
 	assert(SUCCEEDED(result));
-	// 全頂点に対して
+	 全頂点に対して
 	for (int i = 0; i < _countof(vertices); i++) {
 		vertMap[i] = vertices[i]; // 座標をコピー
 	}
-	// 繋がりを解除
+	 繋がりを解除
 	vertBuff->Unmap(0, nullptr);
 
 	// 頂点バッファビューの作成
@@ -191,46 +194,46 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma endregion
 
 #pragma region 頂点インデックス
-	// インデックスデータ全体のサイズ
-	UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indices));
+	//// インデックスデータ全体のサイズ
+	//UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indices));
 
-	// リソース設定
-	resDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-	resDesc.Width = sizeIB; // インデックス情報が入る分のサイズ
-	resDesc.Height = 1;
-	resDesc.DepthOrArraySize = 1;
-	resDesc.MipLevels = 1;
-	resDesc.SampleDesc.Count = 1;
-	resDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+	//// リソース設定
+	//resDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+	//resDesc.Width = sizeIB; // インデックス情報が入る分のサイズ
+	//resDesc.Height = 1;
+	//resDesc.DepthOrArraySize = 1;
+	//resDesc.MipLevels = 1;
+	//resDesc.SampleDesc.Count = 1;
+	//resDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 
-	// インデックスバッファの生成
-	ID3D12Resource* indexBuff = nullptr;
-	result = directXCore->GetDevice()->CreateCommittedResource(
-		&heapProp, // ヒープ設定
-		D3D12_HEAP_FLAG_NONE,
-		&resDesc, // リソース設定
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&indexBuff));
+	//// インデックスバッファの生成
+	//ID3D12Resource* indexBuff = nullptr;
+	//result = directXCore->GetDevice()->CreateCommittedResource(
+	//	&heapProp, // ヒープ設定
+	//	D3D12_HEAP_FLAG_NONE,
+	//	&resDesc, // リソース設定
+	//	D3D12_RESOURCE_STATE_GENERIC_READ,
+	//	nullptr,
+	//	IID_PPV_ARGS(&indexBuff));
 
 
 
-	// インデックスバッファをマッピング
-	uint16_t* indexMap = nullptr;
-	result = indexBuff->Map(0, nullptr, (void**)&indexMap);
-	// 全インデックスに対して
-	for (int i = 0; i < _countof(indices); i++)
-	{
-		indexMap[i] = indices[i];   // インデックスをコピー
-	}
-	// マッピング解除
-	indexBuff->Unmap(0, nullptr);
+	//// インデックスバッファをマッピング
+	//uint16_t* indexMap = nullptr;
+	//result = indexBuff->Map(0, nullptr, (void**)&indexMap);
+	//// 全インデックスに対して
+	//for (int i = 0; i < _countof(indices); i++)
+	//{
+	//	indexMap[i] = indices[i];   // インデックスをコピー
+	//}
+	//// マッピング解除
+	//indexBuff->Unmap(0, nullptr);
 
-	// インデックスバッファビューの作成
-	D3D12_INDEX_BUFFER_VIEW ibView{};
-	ibView.BufferLocation = indexBuff->GetGPUVirtualAddress();
-	ibView.Format = DXGI_FORMAT_R16_UINT;
-	ibView.SizeInBytes = sizeIB;
+	//// インデックスバッファビューの作成
+	//D3D12_INDEX_BUFFER_VIEW ibView{};
+	//ibView.BufferLocation = indexBuff->GetGPUVirtualAddress();
+	//ibView.Format = DXGI_FORMAT_R16_UINT;
+	//ibView.SizeInBytes = sizeIB;
 
 #pragma endregion
 
@@ -294,70 +297,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	constMapTransform->mat.r[3].m128_f32[1] = 1.0f;*/
 
 #pragma endregion
-
-	TexMetadata metadata{};
-	ScratchImage scratchImg{};
-	// WICテクスチャのロード
-	result = LoadFromWICFile(
-		L"Resources/texture.png",   //「Resources」フォルダの「texture.png」
-		WIC_FLAGS_NONE,
-		&metadata, scratchImg);
-
-	assert(SUCCEEDED(result));
-
-	ScratchImage mipChain{};
-	// ミップマップ生成
-	result = GenerateMipMaps(
-		scratchImg.GetImages(), scratchImg.GetImageCount(), scratchImg.GetMetadata(),
-		TEX_FILTER_DEFAULT, 0, mipChain);
-	if (SUCCEEDED(result)) {
-		scratchImg = std::move(mipChain);
-		metadata = scratchImg.GetMetadata();
-	}
-
-	// 読み込んだディフューズテクスチャをSRGBとして扱う
-	metadata.format = MakeSRGB(metadata.format);
-
-
-	// ヒープ設定
-	D3D12_HEAP_PROPERTIES textureHeapProp{};
-	textureHeapProp.Type = D3D12_HEAP_TYPE_CUSTOM;
-	textureHeapProp.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
-	textureHeapProp.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
-	// リソース設定
-	D3D12_RESOURCE_DESC textureResourceDesc{};
-	textureResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-	textureResourceDesc.Format = metadata.format;
-	textureResourceDesc.Width = metadata.width;
-	textureResourceDesc.Height = (UINT)metadata.height;
-	textureResourceDesc.DepthOrArraySize = (UINT16)metadata.arraySize;
-	textureResourceDesc.MipLevels = (UINT16)metadata.mipLevels;
-	textureResourceDesc.SampleDesc.Count = 1;
-
-	// テクスチャバッファの生成
-	ID3D12Resource* texBuff = nullptr;
-	result = directXCore->GetDevice()->CreateCommittedResource(
-		&textureHeapProp,
-		D3D12_HEAP_FLAG_NONE,
-		&textureResourceDesc,
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&texBuff));
-
-	// 全ミップマップについて
-	for (size_t i = 0; i < metadata.mipLevels; i++) {
-		// ミップマップレベルを指定してイメージを取得
-		const Image* img = scratchImg.GetImage(i, 0, 0);
-		// テクスチャバッファにデータ転送
-		result = texBuff->WriteToSubresource(
-			(UINT)i,
-			nullptr,              // 全領域へコピー
-			img->pixels,          // 元データアドレス
-			(UINT)img->rowPitch,  // 1ラインサイズL"Basic
-			(UINT)img->slicePitch // 1枚サイズ
-		);
-		assert(SUCCEEDED(result));
-	}
 
 	ID3DBlob* vsBlob = nullptr; // 頂点シェーダオブジェクト
 	ID3DBlob* psBlob = nullptr; // ピクセルシェーダオブジェクト
@@ -445,16 +384,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	//SRVヒープの先頭ハンドルを取得
 	D3D12_CPU_DESCRIPTOR_HANDLE srvHandle = srvHeap->GetCPUDescriptorHandleForHeapStart();
-
-	// シェーダリソースビュー設定
-	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
-	srvDesc.Format = metadata.format;
-	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels = metadata.mipLevels;
-
-	// ハンドルの指す位置にシェーダーリソースビュー作成
-	directXCore->GetDevice()->CreateShaderResourceView(texBuff, &srvDesc, srvHandle);
 
 	// グラフィックスパイプライン設定
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc{};
