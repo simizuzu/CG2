@@ -118,6 +118,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Engine\2d;$(ProjectDir)Engine\3d;$(ProjectDir)Engine\audio;$(ProjectDir)Engine\base;$(ProjectDir)Engine\input;$(ProjectDir)Engine\math;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -132,6 +133,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Engine\2d;$(ProjectDir)Engine\3d;$(ProjectDir)Engine\audio;$(ProjectDir)Engine\base;$(ProjectDir)Engine\input;$(ProjectDir)Engine\math;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -141,23 +143,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DirectXCore.cpp" />
-    <ClCompile Include="DX12Math.cpp" />
-    <ClCompile Include="Input.cpp" />
+    <ClCompile Include="Engine\2d\Sprite.cpp" />
+    <ClCompile Include="Engine\base\DirectXCore.cpp">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <ClCompile Include="Engine\base\TextureManager.cpp" />
+    <ClCompile Include="Engine\input\Input.cpp" />
+    <ClCompile Include="Engine\math\DX12Math.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Sprite.cpp" />
-    <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="WinApi.cpp" />
     <ClCompile Include="WorldTransform.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DirectXCore.h" />
-    <ClInclude Include="DX12Math.h" />
-    <ClInclude Include="Input.h" />
-    <ClInclude Include="Sprite.h" />
-    <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="Engine\2d\Sprite.h" />
+    <ClInclude Include="Engine\base\DirectXCore.h" />
+    <ClInclude Include="Engine\base\TextureManager.h" />
+    <ClInclude Include="Engine\input\Input.h" />
+    <ClInclude Include="Engine\math\DX12Math.h" />
     <ClInclude Include="WinApi.h" />
-    <ClInclude Include="WorldTransform.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

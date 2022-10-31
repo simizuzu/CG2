@@ -16,60 +16,87 @@
     <Filter Include="シェーダー ファイル">
       <UniqueIdentifier>{17fe6702-5341-4a2e-8ea2-3ff954857e77}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\2D">
+      <UniqueIdentifier>{e139ce7e-a2fa-48f6-9344-b6cc140794fc}</UniqueIdentifier>
+    </Filter>
     <Filter Include="ソース ファイル\2D">
       <UniqueIdentifier>{e85ba6ce-56e5-4601-868b-90f4fe79dd8e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\2D">
-      <UniqueIdentifier>{e139ce7e-a2fa-48f6-9344-b6cc140794fc}</UniqueIdentifier>
+    <Filter Include="ソース ファイル\3D">
+      <UniqueIdentifier>{0cbce490-db73-4c6e-8d05-e3592b2c7154}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Audio">
+      <UniqueIdentifier>{d728b547-a622-4241-9a0a-60c94c143050}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Base">
+      <UniqueIdentifier>{80984263-c7eb-4ab0-ad6c-5be3e708b19f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Input">
+      <UniqueIdentifier>{80ab30c1-db53-4c59-bc4e-d6bed8844254}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Math">
+      <UniqueIdentifier>{941fd125-81fc-4c87-93a5-4965387d1b16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\3D">
+      <UniqueIdentifier>{bf11d7f8-b427-48de-a74a-f8890ee97644}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Audio">
+      <UniqueIdentifier>{202d1bd9-718a-4f25-b664-12904ba2085c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Base">
+      <UniqueIdentifier>{42587461-db68-477b-88ab-b3764812550e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Input">
+      <UniqueIdentifier>{05997ed0-c182-42d0-b711-b009ab815235}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Math">
+      <UniqueIdentifier>{a9a7175f-514f-45b9-a5cf-e65eaaf053f6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="WinApi.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Engine\math\DX12Math.cpp">
+      <Filter>ソース ファイル\Math</Filter>
     </ClCompile>
-    <ClCompile Include="Input.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Engine\base\DirectXCore.cpp">
+      <Filter>ソース ファイル\Base</Filter>
     </ClCompile>
-    <ClCompile Include="DirectXCore.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Engine\input\Input.cpp">
+      <Filter>ソース ファイル\Input</Filter>
     </ClCompile>
-    <ClCompile Include="WorldTransform.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="DX12Math.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Sprite.cpp">
+    <ClCompile Include="Engine\2d\Sprite.cpp">
       <Filter>ソース ファイル\2D</Filter>
     </ClCompile>
-    <ClCompile Include="TextureManager.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="WorldTransform.cpp">
+      <Filter>ソース ファイル\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\base\TextureManager.cpp">
+      <Filter>ソース ファイル\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="WinApi.cpp">
+      <Filter>ソース ファイル\Base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="WinApi.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Engine\base\DirectXCore.h">
+      <Filter>ヘッダー ファイル\Base</Filter>
     </ClInclude>
-    <ClInclude Include="Input.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Engine\math\DX12Math.h">
+      <Filter>ヘッダー ファイル\Math</Filter>
     </ClInclude>
-    <ClInclude Include="DirectXCore.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Engine\input\Input.h">
+      <Filter>ヘッダー ファイル\Input</Filter>
     </ClInclude>
-    <ClInclude Include="WorldTransform.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="DX12Math.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Sprite.h">
+    <ClInclude Include="Engine\2d\Sprite.h">
       <Filter>ヘッダー ファイル\2D</Filter>
     </ClInclude>
-    <ClInclude Include="TextureManager.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Engine\base\TextureManager.h">
+      <Filter>ヘッダー ファイル\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="WinApi.h">
+      <Filter>ヘッダー ファイル\Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
