@@ -68,8 +68,6 @@ void Sprite::Draw(TextureData& textureData, Math::Vector3 pos, Math::Vector3 sca
 	mScale.MakeScaling(scale.x, scale.y, scale.z);
 	// ƒ[ƒ‹ƒhs—ñ
 	matWorld = mScale * mRot * mTrans;
-
-
 }
 
 void Sprite::CreateVertexIndexBuffer()

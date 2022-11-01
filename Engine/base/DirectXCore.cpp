@@ -294,7 +294,7 @@ void DirectXCore::InitializeDirectXCore() {
 
 void DirectXCore::DrawStart() {
 
-	//1バックバッファ番号を取得
+	// バックバッファ番号を取得
 	UINT bbIndex = swapChain->GetCurrentBackBufferIndex();
 	//書き込み可能に変更
 
@@ -303,17 +303,17 @@ void DirectXCore::DrawStart() {
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;//描画状態へ
 	commandList->ResourceBarrier(1, &barrierDesc);
 
-	//2描画先変更
+	// 描画先変更
 	rtvHandle = rtvHeap->GetCPUDescriptorHandleForHeapStart();
 	rtvHandle.ptr += (static_cast<unsigned long long>(bbIndex)) * device->GetDescriptorHandleIncrementSize(rtvHeapDesc.Type);
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
 	commandList->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
 
-	//3画面クリア
+	// 画面クリア
 	commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
 	commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
-	// 4.描画コマンドここから
+	// 描画コマンドここから
 	//ビューポート設定
 	viewport.Width = (FLOAT)WinApi::GetInstance()->GetWindowSize().window_width;
 	viewport.Height = (FLOAT)WinApi::GetInstance()->GetWindowSize().window_height;
@@ -337,7 +337,7 @@ void DirectXCore::DrawStart() {
 
 void DirectXCore::DrawEnd() {
 
-	//5.元に戻す
+	// 元に戻す
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;//描画状態から
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;//表示状態へ
 	commandList->ResourceBarrier(1, &barrierDesc);

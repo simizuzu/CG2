@@ -9,7 +9,6 @@
 #include <random>
 #include <DirectXTex.h>
 
-
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")
 #pragma comment(lib,"d3dcompiler.lib")
@@ -18,6 +17,8 @@
 #include "DirectXCore.h"
 #include "Input.h"
 #include "TextureManager.h"
+#include "Sprite2D.h"
+#include "SpriteCommon.h"
 
 using namespace DirectX;
 
@@ -61,63 +62,17 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		XMFLOAT3 normal; // 法線ベクトル
 		XMFLOAT2 uv;	 // uv座標
 	};
-	// 頂点データ
-	Vertex vertices[] = {
-		//  x      y      z       u     v
-		// 前
-		{{-5.0f, -5.0f, -5.0f}, {}, {0.0f, 1.0f}}, // 左下
-		{{-5.0f,  5.0f, -5.0f}, {}, {0.0f, 0.0f}}, // 左上
-		{{ 5.0f, -5.0f, -5.0f}, {}, {1.0f, 1.0f}}, // 右下
-		{{ 5.0f,  5.0f, -5.0f}, {}, {1.0f, 0.0f}}, // 右上
-		// 後(前面とZ座標の符号が逆)
-		{{-5.0f, -5.0f,  5.0f}, {}, {0.0f, 1.0f}}, // 左下
-		{{-5.0f,  5.0f,  5.0f}, {}, {0.0f, 0.0f}}, // 左上
-		{{ 5.0f, -5.0f,  5.0f}, {}, {1.0f, 1.0f}}, // 右下
-		{{ 5.0f,  5.0f,  5.0f}, {}, {1.0f, 0.0f}}, // 右上
-		// 左
-		{{-5.0f, -5.0f, -5.0f}, {}, {0.0f, 1.0f}}, // 左下
-		{{-5.0f,  5.0f, -5.0f}, {}, {0.0f, 0.0f}}, // 左上
-		{{-5.0f, -5.0f,  5.0f}, {}, {1.0f, 1.0f}}, // 右下
-		{{-5.0f,  5.0f,  5.0f}, {}, {1.0f, 0.0f}}, // 右上
-		// 右（左面とX座標符号が逆）
-		{{ 5.0f, -5.0f, -5.0f}, {}, {0.0f, 1.0f}}, // 左下
-		{{ 5.0f,  5.0f, -5.0f}, {}, {0.0f, 0.0f}}, // 左上
-		{{ 5.0f, -5.0f,  5.0f}, {}, {1.0f, 1.0f}}, // 右下
-		{{ 5.0f,  5.0f,  5.0f}, {}, {1.0f, 0.0f}}, // 右上
-		// 下
-		{{ 5.0f, -5.0f, -5.0f}, {}, {0.0f, 1.0f}}, // 左下
-		{{ 5.0f, -5.0f,  5.0f}, {}, {0.0f, 0.0f}}, // 左上
-		{{-5.0f, -5.0f, -5.0f}, {}, {1.0f, 1.0f}}, // 右下
-		{{-5.0f, -5.0f,  5.0f}, {}, {1.0f, 0.0f}}, // 右上
-		// 上（下面とY座標の符号が逆）
-		{{ 5.0f,  5.0f, -5.0f}, {}, {0.0f, 1.0f}}, // 左下
-		{{ 5.0f,  5.0f,  5.0f}, {}, {0.0f, 0.0f}}, // 左上
-		{{-5.0f,  5.0f, -5.0f}, {}, {1.0f, 1.0f}}, // 右下
-		{{-5.0f,  5.0f,  5.0f}, {}, {1.0f, 0.0f}}, // 右上
-	};
 
-	// インデックスデータ
-	unsigned short indices[] =
-	{
-		// 前
-		0, 1, 2,    // 三角形1つ目
-		2, 1, 3,    // 三角形2つ目
-		// 後（前の面に4加算）
-		6, 5, 4,    // 三角形3つ目
-		7, 5 ,6,    // 三角形4つ目
-		// 左
-		10, 9, 8,   // 三角形5つ目
-		9, 10, 11,  // 三角形6つ目
-		// 右
-		12, 13, 14, // 三角形7つ目
-		15, 14, 13, // 三角形8つ目
-		// 下
-		16, 17, 18, // 三角形9つ目
-		19, 18, 17, // 三角形10つ目
-		// 上
-		22, 21, 20, // 三角形11つ目
-		21, 22, 23, // 三角形12つ目
-	};
+	// スプライト初期化
+
+	std::unique_ptr<SpriteCommon> spriteCommon;
+	std::make_unique<SpriteCommon>();
+	spriteCommon->Initialize(directXCore);
+
+	std::unique_ptr<Sprite2D> sprite2D;
+	std::make_unique<Sprite2D>();
+	sprite2D->Initialize(spriteCommon);
+
 #pragma endregion
 
 #pragma region 頂点バッファ
@@ -176,11 +131,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	Vertex* vertMap = nullptr;
 	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
 	assert(SUCCEEDED(result));
-	 全頂点に対して
+	 //全頂点に対して
 	for (int i = 0; i < _countof(vertices); i++) {
 		vertMap[i] = vertices[i]; // 座標をコピー
 	}
-	 繋がりを解除
+	 //繋がりを解除
 	vertBuff->Unmap(0, nullptr);
 
 	// 頂点バッファビューの作成

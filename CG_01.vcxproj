@@ -152,7 +152,10 @@
     <ClCompile Include="Engine\base\WinApi.cpp" />
     <ClCompile Include="Engine\input\Input.cpp" />
     <ClCompile Include="Engine\math\DX12Math.cpp" />
+    <ClCompile Include="gamescene.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Sprite2D.cpp" />
+    <ClCompile Include="SpriteCommon.cpp" />
     <ClCompile Include="WorldTransform.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -162,6 +165,9 @@
     <ClInclude Include="Engine\base\WinApi.h" />
     <ClInclude Include="Engine\input\Input.h" />
     <ClInclude Include="Engine\math\DX12Math.h" />
+    <ClInclude Include="gamescene.h" />
+    <ClInclude Include="Sprite2D.h" />
+    <ClInclude Include="SpriteCommon.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
